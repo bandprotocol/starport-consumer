@@ -1,0 +1,13 @@
+syntax = "proto3";
+package bandprotocol.starportconsumer.starportconsumer;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/bandprotocol/starport-consumer/x/starportconsumer/types";
+
+// Msg defines the Msg service.
+service Msg {
+    // this line is used by starport scaffolding # proto/tx/rpc
+}
+
+// this line is used by starport scaffolding # proto/tx/message
