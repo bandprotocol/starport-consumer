@@ -23,20 +23,23 @@ func (k msgServer) RequestData(goCtx context.Context, msg *types.MsgRequestData)
 	if !found {
 		return nil, sdkerrors.Wrapf(
 			sdkerrors.ErrUnknownRequest,
-			"unknown channel %s port consuming",
+			"unknown channel %s port %s",
 			msg.SourceChannel,
+			sourcePort,
 		)
 	}
 	destinationPort := sourceChannelEnd.Counterparty.PortId
 	destinationChannel := sourceChannelEnd.Counterparty.ChannelId
+
 	sequence, found := k.channelKeeper.GetNextSequenceSend(
-		ctx, "consuming", msg.SourceChannel,
+		ctx, sourcePort, msg.SourceChannel,
 	)
 	if !found {
 		return nil, sdkerrors.Wrapf(
 			sdkerrors.ErrUnknownRequest,
-			"unknown sequence number for channel %s port oracle",
+			"unknown sequence number for channel %s port %s",
 			msg.SourceChannel,
+			sourcePort,
 		)
 	}
 
