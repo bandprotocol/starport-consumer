@@ -9,3 +9,7 @@ message Calldata {
   repeated string symbols = 1;
   uint64 multiplier = 2;
 }
+
+message OracleResult {
+  repeated uint64 rates = 1;
+}

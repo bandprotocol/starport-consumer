@@ -9,6 +9,10 @@ export interface Calldata {
   multiplier: number
 }
 
+export interface OracleResult {
+  rates: number[]
+}
+
 const baseCalldata: object = { symbols: '', multiplier: 0 }
 
 export const Calldata = {
@@ -83,6 +87,77 @@ export const Calldata = {
       message.multiplier = object.multiplier
     } else {
       message.multiplier = 0
+    }
+    return message
+  }
+}
+
+const baseOracleResult: object = { rates: 0 }
+
+export const OracleResult = {
+  encode(message: OracleResult, writer: Writer = Writer.create()): Writer {
+    writer.uint32(10).fork()
+    for (const v of message.rates) {
+      writer.uint64(v)
+    }
+    writer.ldelim()
+    return writer
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): OracleResult {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = { ...baseOracleResult } as OracleResult
+    message.rates = []
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos
+            while (reader.pos < end2) {
+              message.rates.push(longToNumber(reader.uint64() as Long))
+            }
+          } else {
+            message.rates.push(longToNumber(reader.uint64() as Long))
+          }
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    return message
+  },
+
+  fromJSON(object: any): OracleResult {
+    const message = { ...baseOracleResult } as OracleResult
+    message.rates = []
+    if (object.rates !== undefined && object.rates !== null) {
+      for (const e of object.rates) {
+        message.rates.push(Number(e))
+      }
+    }
+    return message
+  },
+
+  toJSON(message: OracleResult): unknown {
+    const obj: any = {}
+    if (message.rates) {
+      obj.rates = message.rates.map((e) => e)
+    } else {
+      obj.rates = []
+    }
+    return obj
+  },
+
+  fromPartial(object: DeepPartial<OracleResult>): OracleResult {
+    const message = { ...baseOracleResult } as OracleResult
+    message.rates = []
+    if (object.rates !== undefined && object.rates !== null) {
+      for (const e of object.rates) {
+        message.rates.push(e)
+      }
     }
     return message
   }

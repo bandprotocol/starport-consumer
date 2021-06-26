@@ -235,7 +235,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title consuming/calldata.proto
+ * @title consuming/genesis.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {}

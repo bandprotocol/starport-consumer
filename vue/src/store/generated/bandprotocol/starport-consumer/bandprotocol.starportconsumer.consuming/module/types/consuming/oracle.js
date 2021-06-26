@@ -78,6 +78,73 @@ export const Calldata = {
         return message;
     }
 };
+const baseOracleResult = { rates: 0 };
+export const OracleResult = {
+    encode(message, writer = Writer.create()) {
+        writer.uint32(10).fork();
+        for (const v of message.rates) {
+            writer.uint64(v);
+        }
+        writer.ldelim();
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof Uint8Array ? new Reader(input) : input;
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseOracleResult };
+        message.rates = [];
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if ((tag & 7) === 2) {
+                        const end2 = reader.uint32() + reader.pos;
+                        while (reader.pos < end2) {
+                            message.rates.push(longToNumber(reader.uint64()));
+                        }
+                    }
+                    else {
+                        message.rates.push(longToNumber(reader.uint64()));
+                    }
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        const message = { ...baseOracleResult };
+        message.rates = [];
+        if (object.rates !== undefined && object.rates !== null) {
+            for (const e of object.rates) {
+                message.rates.push(Number(e));
+            }
+        }
+        return message;
+    },
+    toJSON(message) {
+        const obj = {};
+        if (message.rates) {
+            obj.rates = message.rates.map((e) => e);
+        }
+        else {
+            obj.rates = [];
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        const message = { ...baseOracleResult };
+        message.rates = [];
+        if (object.rates !== undefined && object.rates !== null) {
+            for (const e of object.rates) {
+                message.rates.push(e);
+            }
+        }
+        return message;
+    }
+};
 var globalThis = (() => {
     if (typeof globalThis !== 'undefined')
         return globalThis;

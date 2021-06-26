@@ -8,7 +8,7 @@ import (
 
 // x/consuming module sentinel errors
 var (
-	ErrSample               = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrItemNotFound         = sdkerrors.Register(ModuleName, 1100, "item not found")
 	ErrInvalidPacketTimeout = sdkerrors.Register(ModuleName, 1500, "invalid packet timeout")
 	ErrInvalidVersion       = sdkerrors.Register(ModuleName, 1501, "invalid version")
 )

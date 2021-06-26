@@ -2,12 +2,11 @@ import { txClient, queryClient, MissingWalletError } from './module'
 // @ts-ignore
 import { SpVuexError } from '@starport/vuex'
 
-import { Calldata } from "./module/types/consuming/calldata"
-import { ConsumingPacketData } from "./module/types/consuming/packet"
-import { NoData } from "./module/types/consuming/packet"
+import { Calldata } from "./module/types/consuming/oracle"
+import { OracleResult } from "./module/types/consuming/oracle"
 
 
-export { Calldata, ConsumingPacketData, NoData };
+export { Calldata, OracleResult };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -48,8 +47,7 @@ const getDefaultState = () => {
 				
 				_Structure: {
 						Calldata: getStructure(Calldata.fromPartial({})),
-						ConsumingPacketData: getStructure(ConsumingPacketData.fromPartial({})),
-						NoData: getStructure(NoData.fromPartial({})),
+						OracleResult: getStructure(OracleResult.fromPartial({})),
 						
 		},
 		_Subscriptions: new Set(),

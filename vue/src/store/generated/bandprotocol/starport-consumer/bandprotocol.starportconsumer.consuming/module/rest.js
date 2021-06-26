@@ -130,7 +130,7 @@ export class HttpClient {
     }
 }
 /**
- * @title consuming/calldata.proto
+ * @title consuming/genesis.proto
  * @version version not set
  */
 export class Api extends HttpClient {

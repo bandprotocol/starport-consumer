@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { Reader, util, configure, Writer } from 'protobufjs/minimal'
 import * as Long from 'long'
-import { Calldata } from '../consuming/calldata'
+import { Calldata } from '../consuming/oracle'
 import { Coin } from '../cosmos/base/v1beta1/coin'
 
 export const protobufPackage = 'bandprotocol.starportconsumer.consuming'

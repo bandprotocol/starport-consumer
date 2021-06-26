@@ -10,6 +10,9 @@ import (
 	channeltypes "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
 	porttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/05-port/types"
 	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
+
+	"github.com/bandprotocol/chain/v2/pkg/obi"
+	bandtypes "github.com/bandprotocol/chain/v2/x/oracle/types"
 )
 
 // OnChanOpenInit implements the IBCModule interface
@@ -129,25 +132,23 @@ func (am AppModule) OnRecvPacket(
 	ctx sdk.Context,
 	modulePacket channeltypes.Packet,
 ) (*sdk.Result, []byte, error) {
-	var modulePacketData types.ConsumingPacketData
+	var modulePacketData bandtypes.OracleResponsePacketData
 	if err := modulePacketData.Unmarshal(modulePacket.GetData()); err != nil {
 		return nil, nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: %s", err.Error())
 	}
 
-	var ack channeltypes.Acknowledgement
-
-	// Dispatch packet
-	switch packet := modulePacketData.Packet.(type) {
-	// this line is used by starport scaffolding # ibc/packet/module/recv
-	default:
-		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
-		return nil, []byte{}, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
+	var result types.OracleResult
+	if err := obi.Decode(modulePacketData.Result, &result); err != nil {
+		return nil, nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot decode oracle result: %s", err.Error())
 	}
+
+	fmt.Println("Receive result packet", result)
+	am.keeper.SetResult(ctx, modulePacketData.RequestID, result)
 
 	// NOTE: acknowledgement will be written synchronously during IBC handler execution.
 	return &sdk.Result{
 		Events: ctx.EventManager().Events().ToABCIEvents(),
-	}, ack.GetBytes(), nil
+	}, nil, nil // Acknowledgement is not needed, since BandChain ignores it.
 }
 
 // OnAcknowledgementPacket implements the IBCModule interface
@@ -161,31 +162,35 @@ func (am AppModule) OnAcknowledgementPacket(
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet acknowledgement: %v", err)
 	}
 
-	var modulePacketData types.ConsumingPacketData
-	if err := modulePacketData.Unmarshal(modulePacket.GetData()); err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: %s", err.Error())
-	}
+	// var modulePacketData types.ConsumingPacketData
+	// if err := modulePacketData.Unmarshal(modulePacket.GetData()); err != nil {
+	// 	return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: %s", err.Error())
+	// }
 
-	var eventType string
+	var eventType string = "RequestData"
 
-	// Dispatch packet
-	switch packet := modulePacketData.Packet.(type) {
-	// this line is used by starport scaffolding # ibc/packet/module/ack
-	default:
-		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
-	}
+	// // Dispatch packet
+	// switch packet := modulePacketData.Packet.(type) {
+	// // this line is used by starport scaffolding # ibc/packet/module/ack
+	// default:
+	// 	errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
+	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
+	// }
 
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			eventType,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-			sdk.NewAttribute(types.AttributeKeyAck, fmt.Sprintf("%v", ack)),
-		),
-	)
+	// ctx.EventManager().EmitEvent(
+	// 	sdk.NewEvent(
+	// 		eventType,
+	// 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+	// 		sdk.NewAttribute(types.AttributeKeyAck, fmt.Sprintf("%v", ack)),
+	// 	),
+	// )
 
 	switch resp := ack.Response.(type) {
 	case *channeltypes.Acknowledgement_Result:
+		var oracleAck bandtypes.OracleRequestPacketAcknowledgement
+		bandtypes.ModuleCdc.MustUnmarshalJSON(resp.Result, &oracleAck)
+		am.keeper.SetLatestRequestID(ctx, oracleAck.RequestID)
+
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				eventType,
@@ -211,18 +216,18 @@ func (am AppModule) OnTimeoutPacket(
 	ctx sdk.Context,
 	modulePacket channeltypes.Packet,
 ) (*sdk.Result, error) {
-	var modulePacketData types.ConsumingPacketData
-	if err := modulePacketData.Unmarshal(modulePacket.GetData()); err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: %s", err.Error())
-	}
+	// var modulePacketData types.ConsumingPacketData
+	// if err := modulePacketData.Unmarshal(modulePacket.GetData()); err != nil {
+	// 	return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: %s", err.Error())
+	// }
 
-	// Dispatch packet
-	switch packet := modulePacketData.Packet.(type) {
-	// this line is used by starport scaffolding # ibc/packet/module/timeout
-	default:
-		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
-	}
+	// // Dispatch packet
+	// switch packet := modulePacketData.Packet.(type) {
+	// // this line is used by starport scaffolding # ibc/packet/module/timeout
+	// default:
+	// 	errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
+	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
+	// }
 
 	return &sdk.Result{
 		Events: ctx.EventManager().Events().ToABCIEvents(),

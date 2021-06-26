@@ -1,5 +1,5 @@
 import { Reader, Writer } from 'protobufjs/minimal';
-import { Calldata } from '../consuming/calldata';
+import { Calldata } from '../consuming/oracle';
 import { Coin } from '../cosmos/base/v1beta1/coin';
 export declare const protobufPackage = "bandprotocol.starportconsumer.consuming";
 /** this line is used by starport scaffolding # proto/tx/message */

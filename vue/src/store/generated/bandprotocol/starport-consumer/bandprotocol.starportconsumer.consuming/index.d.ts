@@ -1,6 +1,5 @@
-import { Calldata } from "./module/types/consuming/calldata";
-import { ConsumingPacketData } from "./module/types/consuming/packet";
-import { NoData } from "./module/types/consuming/packet";
-export { Calldata, ConsumingPacketData, NoData };
+import { Calldata } from "./module/types/consuming/oracle";
+import { OracleResult } from "./module/types/consuming/oracle";
+export { Calldata, OracleResult };
 declare const _default;
 export default _default;
