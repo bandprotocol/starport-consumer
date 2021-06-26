@@ -18,6 +18,20 @@ export interface ConsumingCalldata {
 
 export type ConsumingMsgRequestDataResponse = object;
 
+export interface ConsumingOracleResult {
+  rates?: string[];
+}
+
+export interface ConsumingQueryLatestRequestIdResponse {
+  /** @format int64 */
+  requestId?: string;
+}
+
+export interface ConsumingQueryResultResponse {
+  /** pagination defines an optional pagination for the request. */
+  result?: ConsumingOracleResult;
+}
+
 export interface ProtobufAny {
   typeUrl?: string;
 
@@ -238,4 +252,37 @@ export class HttpClient<SecurityDataType = unknown> {
  * @title consuming/genesis.proto
  * @version version not set
  */
-export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {}
+export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryLatestRequestId
+   * @summary LatestRequestId
+   * @request GET:/consuming/latest_request_id
+   */
+  queryLatestRequestId = (params: RequestParams = {}) =>
+    this.request<ConsumingQueryLatestRequestIdResponse, RpcStatus>({
+      path: `/consuming/latest_request_id`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+ * No description
+ * 
+ * @tags Query
+ * @name QueryResult
+ * @summary this line is used by starport scaffolding # 2
+Request defines a rpc handler method for MsgRequestData.
+ * @request GET:/consuming/result/{requestId}
+ */
+  queryResult = (requestId: string, params: RequestParams = {}) =>
+    this.request<ConsumingQueryResultResponse, RpcStatus>({
+      path: `/consuming/result/${requestId}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+}

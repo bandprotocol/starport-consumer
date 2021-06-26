@@ -4,6 +4,17 @@ export interface ConsumingCalldata {
     multiplier?: string;
 }
 export declare type ConsumingMsgRequestDataResponse = object;
+export interface ConsumingOracleResult {
+    rates?: string[];
+}
+export interface ConsumingQueryLatestRequestIdResponse {
+    /** @format int64 */
+    requestId?: string;
+}
+export interface ConsumingQueryResultResponse {
+    /** pagination defines an optional pagination for the request. */
+    result?: ConsumingOracleResult;
+}
 export interface ProtobufAny {
     typeUrl?: string;
     /** @format byte */
@@ -83,5 +94,24 @@ export declare class HttpClient<SecurityDataType = unknown> {
  * @version version not set
  */
 export declare class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+    /**
+     * No description
+     *
+     * @tags Query
+     * @name QueryLatestRequestId
+     * @summary LatestRequestId
+     * @request GET:/consuming/latest_request_id
+     */
+    queryLatestRequestId: (params?: RequestParams) => Promise<HttpResponse<ConsumingQueryLatestRequestIdResponse, RpcStatus>>;
+    /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryResult
+   * @summary this line is used by starport scaffolding # 2
+  Request defines a rpc handler method for MsgRequestData.
+   * @request GET:/consuming/result/{requestId}
+   */
+    queryResult: (requestId: string, params?: RequestParams) => Promise<HttpResponse<ConsumingQueryResultResponse, RpcStatus>>;
 }
 export {};

@@ -4,12 +4,35 @@ package bandprotocol.starportconsumer.consuming;
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
+import "consuming/oracle.proto";
 
 option go_package = "github.com/bandprotocol/starport-consumer/x/consuming/types";
 
 // Query defines the gRPC querier service.
 service Query {
     // this line is used by starport scaffolding # 2
+    // Request defines a rpc handler method for MsgRequestData.
+    rpc Result(QueryResultRequest) returns (QueryResultResponse) {
+        option (google.api.http).get = "/consuming/result/{request_id}";
+    }
+
+    // LatestRequestId
+    rpc LatestRequestId(QueryLatestRequestIdRequest) returns (QueryLatestRequestIdResponse) {
+        option (google.api.http).get = "/consuming/latest_request_id";
+    }
 }
 
-// this line is used by starport scaffolding # 3
+// QueryResultRequest is the request type for the Query/Result RPC method
+message QueryResultRequest { int64 request_id = 1; }
+
+// QueryResultResponse is the response type for the Query/Result RPC method
+message QueryResultResponse {
+  // pagination defines an optional pagination for the request.
+  OracleResult result = 1;
+}
+
+// QueryLatestRequestIdRequest
+message QueryLatestRequestIdRequest {}
+
+// QueryLatestRequestIdResponse
+message QueryLatestRequestIdResponse { int64 request_id = 1; }

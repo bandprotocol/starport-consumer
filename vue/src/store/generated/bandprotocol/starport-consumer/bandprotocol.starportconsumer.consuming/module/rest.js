@@ -134,4 +134,36 @@ export class HttpClient {
  * @version version not set
  */
 export class Api extends HttpClient {
+    constructor() {
+        super(...arguments);
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QueryLatestRequestId
+         * @summary LatestRequestId
+         * @request GET:/consuming/latest_request_id
+         */
+        this.queryLatestRequestId = (params = {}) => this.request({
+            path: `/consuming/latest_request_id`,
+            method: "GET",
+            format: "json",
+            ...params,
+        });
+        /**
+       * No description
+       *
+       * @tags Query
+       * @name QueryResult
+       * @summary this line is used by starport scaffolding # 2
+      Request defines a rpc handler method for MsgRequestData.
+       * @request GET:/consuming/result/{requestId}
+       */
+        this.queryResult = (requestId, params = {}) => this.request({
+            path: `/consuming/result/${requestId}`,
+            method: "GET",
+            format: "json",
+            ...params,
+        });
+    }
 }

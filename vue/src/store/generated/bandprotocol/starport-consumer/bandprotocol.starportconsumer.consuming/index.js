@@ -37,6 +37,8 @@ function getStructure(template) {
 }
 const getDefaultState = () => {
     return {
+        Result: {},
+        LatestRequestId: {},
         _Structure: {
             Calldata: getStructure(Calldata.fromPartial({})),
             OracleResult: getStructure(OracleResult.fromPartial({})),
@@ -64,6 +66,18 @@ export default {
         }
     },
     getters: {
+        getResult: (state) => (params = { params: {} }) => {
+            if (!params.query) {
+                params.query = null;
+            }
+            return state.Result[JSON.stringify(params)] ?? {};
+        },
+        getLatestRequestId: (state) => (params = { params: {} }) => {
+            if (!params.query) {
+                params.query = null;
+            }
+            return state.LatestRequestId[JSON.stringify(params)] ?? {};
+        },
         getTypeStructure: (state) => (type) => {
             return state._Structure[type].fields;
         }
@@ -92,6 +106,32 @@ export default {
                     throw new SpVuexError('Subscriptions: ' + e.message);
                 }
             });
+        },
+        async QueryResult({ commit, rootGetters, getters }, { options: { subscribe, all } = { subscribe: false, all: false }, params: { ...key }, query = null }) {
+            try {
+                const queryClient = await initQueryClient(rootGetters);
+                let value = (await queryClient.queryResult(key.request_id)).data;
+                commit('QUERY', { query: 'Result', key: { params: { ...key }, query }, value });
+                if (subscribe)
+                    commit('SUBSCRIBE', { action: 'QueryResult', payload: { options: { all }, params: { ...key }, query } });
+                return getters['getResult']({ params: { ...key }, query }) ?? {};
+            }
+            catch (e) {
+                throw new SpVuexError('QueryClient:QueryResult', 'API Node Unavailable. Could not perform query: ' + e.message);
+            }
+        },
+        async QueryLatestRequestId({ commit, rootGetters, getters }, { options: { subscribe, all } = { subscribe: false, all: false }, params: { ...key }, query = null }) {
+            try {
+                const queryClient = await initQueryClient(rootGetters);
+                let value = (await queryClient.queryLatestRequestId()).data;
+                commit('QUERY', { query: 'LatestRequestId', key: { params: { ...key }, query }, value });
+                if (subscribe)
+                    commit('SUBSCRIBE', { action: 'QueryLatestRequestId', payload: { options: { all }, params: { ...key }, query } });
+                return getters['getLatestRequestId']({ params: { ...key }, query }) ?? {};
+            }
+            catch (e) {
+                throw new SpVuexError('QueryClient:QueryLatestRequestId', 'API Node Unavailable. Could not perform query: ' + e.message);
+            }
         },
         async sendMsgRequestData({ rootGetters }, { value, fee = [], memo = '' }) {
             try {

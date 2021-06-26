@@ -4,6 +4,94 @@ info:
   name: ''
   description: ''
 paths:
+  /consuming/latest_request_id:
+    get:
+      summary: LatestRequestId
+      operationId: BandprotocolStarportconsumerConsumingLatestRequestId
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              requestId:
+                type: string
+                format: int64
+            title: QueryLatestRequestIdResponse
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    typeUrl:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  '/consuming/result/{requestId}':
+    get:
+      summary: |-
+        this line is used by starport scaffolding # 2
+        Request defines a rpc handler method for MsgRequestData.
+      operationId: BandprotocolStarportconsumerConsumingResult
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              result:
+                description: pagination defines an optional pagination for the request.
+                type: object
+                properties:
+                  rates:
+                    type: array
+                    items:
+                      type: string
+                      format: uint64
+            title: >-
+              QueryResultResponse is the response type for the Query/Result RPC
+              method
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    typeUrl:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          type: string
+          format: int64
+      tags:
+        - Query
   '/cosmos/bank/v1beta1/balances/{address}':
     get:
       summary: AllBalances queries the balance of all coins for a single account.
@@ -19287,6 +19375,34 @@ definitions:
         format: uint64
   bandprotocol.starportconsumer.consuming.MsgRequestDataResponse:
     type: object
+  bandprotocol.starportconsumer.consuming.OracleResult:
+    type: object
+    properties:
+      rates:
+        type: array
+        items:
+          type: string
+          format: uint64
+  bandprotocol.starportconsumer.consuming.QueryLatestRequestIdResponse:
+    type: object
+    properties:
+      requestId:
+        type: string
+        format: int64
+    title: QueryLatestRequestIdResponse
+  bandprotocol.starportconsumer.consuming.QueryResultResponse:
+    type: object
+    properties:
+      result:
+        description: pagination defines an optional pagination for the request.
+        type: object
+        properties:
+          rates:
+            type: array
+            items:
+              type: string
+              format: uint64
+    title: QueryResultResponse is the response type for the Query/Result RPC method
   cosmos.base.v1beta1.Coin:
     type: object
     properties:
