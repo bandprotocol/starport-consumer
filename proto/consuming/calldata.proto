@@ -1,0 +1,11 @@
+syntax = "proto3";
+package bandprotocol.starportconsumer.consuming;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/bandprotocol/starport-consumer/x/consuming/types";
+
+message Calldata {
+  repeated string symbols = 1;
+  uint64 multiplier = 2;
+}

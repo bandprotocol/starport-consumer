@@ -17,7 +17,7 @@ const (
 	MemStoreKey = "mem_consuming"
 
 	// Version defines the current version the IBC module supports
-	Version = "consuming-1"
+	Version = "bandchain-1"
 
 	// PortID is the default port id that module binds to
 	PortID = "consuming"
