@@ -42,9 +42,7 @@ func (k msgServer) RequestData(goCtx context.Context, msg *types.MsgRequestData)
 			sourcePort,
 		)
 	}
-
-	encodedCalldata := obi.MustEncode(msg.Calldata)
-
+	encodedCalldata := obi.MustEncode(*msg.Calldata)
 	packet := bandtypes.NewOracleRequestPacketData(
 		types.ModuleName,
 		bandtypes.OracleScriptID(msg.OracleScriptID),
