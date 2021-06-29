@@ -1,10 +1,12 @@
 accounts:
-  - name: alice
-    coins: ["20000token", "200000000stake"]
-  - name: bob
-    coins: ["10000token", "100000000stake"]
+  - name: user
+    coins: ["200000000stake"]
+    mnemonic: "dose scale monkey unique flag print problem abstract gold hole quiz oxygen train misery easily sail divert impose fatigue desert length act liar firm"
+  - name: faucet
+    coins: ["200000000stake"]
+    mnemonic: "employ remain drastic agree deer cake hill arrive remain couple pond entry arena orange trash tooth century quality office sausage girl seminar demand riot"
 validator:
-  name: alice
+  name: user
   staked: "100000000stake"
 client:
   vuex:
@@ -12,5 +14,10 @@ client:
   openapi:
     path: "docs/static/openapi.yml"
 faucet:
-  name: bob
-  coins: ["5token", "100000stake"]
+  name: faucet
+  coins: ["100000stake"]
+servers:
+  api-address: "localhost:1317"
+  grpc-address: "localhost:26657"
+build:
+  binary: "consumerd"
