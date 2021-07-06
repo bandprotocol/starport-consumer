@@ -11,8 +11,8 @@ import (
 	channeltypes "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
 	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
 
-	"github.com/bandprotocol/chain/v2/pkg/obi"
-	bandtypes "github.com/bandprotocol/chain/v2/x/oracle/types"
+	"github.com/bandprotocol/bandchain-packet/obi"
+	bandpackets "github.com/bandprotocol/bandchain-packet/packet"
 )
 
 func (k msgServer) RequestData(goCtx context.Context, msg *types.MsgRequestData) (*types.MsgRequestDataResponse, error) {
@@ -43,9 +43,9 @@ func (k msgServer) RequestData(goCtx context.Context, msg *types.MsgRequestData)
 		)
 	}
 	encodedCalldata := obi.MustEncode(*msg.Calldata)
-	packet := bandtypes.NewOracleRequestPacketData(
+	packet := bandpackets.NewOracleRequestPacketData(
 		types.ModuleName,
-		bandtypes.OracleScriptID(msg.OracleScriptID),
+		msg.OracleScriptID,
 		encodedCalldata,
 		msg.AskCount,
 		msg.MinCount,

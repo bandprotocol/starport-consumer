@@ -11,8 +11,8 @@ import (
 	porttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/05-port/types"
 	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
 
-	"github.com/bandprotocol/chain/v2/pkg/obi"
-	bandtypes "github.com/bandprotocol/chain/v2/x/oracle/types"
+	"github.com/bandprotocol/bandchain-packet/obi"
+	bandpackets "github.com/bandprotocol/bandchain-packet/packet"
 )
 
 // OnChanOpenInit implements the IBCModule interface
@@ -132,7 +132,7 @@ func (am AppModule) OnRecvPacket(
 	ctx sdk.Context,
 	modulePacket channeltypes.Packet,
 ) (*sdk.Result, []byte, error) {
-	var modulePacketData bandtypes.OracleResponsePacketData
+	var modulePacketData bandpackets.OracleResponsePacketData
 	if err := types.ModuleCdc.UnmarshalJSON(modulePacket.GetData(), &modulePacketData); err != nil {
 		return nil, nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal packet data: %s", err.Error())
 	}
@@ -187,8 +187,8 @@ func (am AppModule) OnAcknowledgementPacket(
 
 	switch resp := ack.Response.(type) {
 	case *channeltypes.Acknowledgement_Result:
-		var oracleAck bandtypes.OracleRequestPacketAcknowledgement
-		bandtypes.ModuleCdc.MustUnmarshalJSON(resp.Result, &oracleAck)
+		var oracleAck bandpackets.OracleRequestPacketAcknowledgement
+		types.ModuleCdc.MustUnmarshalJSON(resp.Result, &oracleAck)
 		am.keeper.SetLatestRequestID(ctx, oracleAck.RequestID)
 
 		ctx.EventManager().EmitEvent(

@@ -2,8 +2,6 @@ package types
 
 import (
 	"encoding/binary"
-
-	bandoracle "github.com/bandprotocol/chain/v2/x/oracle/types"
 )
 
 const (
@@ -45,7 +43,7 @@ func KeyPrefix(p string) []byte {
 }
 
 // ResultStoreKey is a function to generate key for each result in store
-func ResultStoreKey(requestID bandoracle.RequestID) []byte {
+func ResultStoreKey(requestID int64) []byte {
 	return append(ResultStoreKeyPrefix, int64ToBytes(int64(requestID))...)
 }
 

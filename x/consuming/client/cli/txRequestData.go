@@ -13,8 +13,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-
-	bandtypes "github.com/bandprotocol/chain/v2/x/oracle/types"
 )
 
 var _ = strconv.Itoa(0)
@@ -44,11 +42,10 @@ $ %s tx consuming RequestData 38 4 3 --channel channel-0 --symbols "BTC,ETH" --m
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// retrieve the oracle script id.
-			int64OracleScriptID, err := strconv.ParseInt(args[0], 10, 64)
+			oracleScriptID, err := strconv.ParseInt(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
-			oracleScriptID := bandtypes.OracleScriptID(int64OracleScriptID)
 
 			// retrieve the requested validator count.
 			askCount, err := strconv.ParseUint(args[1], 10, 64)

@@ -3,7 +3,7 @@ module github.com/bandprotocol/starport-consumer
 go 1.16
 
 require (
-	github.com/bandprotocol/chain/v2 v2.0.3
+	github.com/bandprotocol/bandchain-packet v0.0.0-20210706133007-9a8ce4239c06
 	github.com/cosmos/cosmos-sdk v0.42.5
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/protobuf v1.5.2

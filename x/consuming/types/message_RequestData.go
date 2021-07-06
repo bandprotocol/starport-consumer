@@ -3,15 +3,13 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	oracletypes "github.com/bandprotocol/chain/v2/x/oracle/types"
 )
 
 var _ sdk.Msg = &MsgRequestData{}
 
 func NewMsgRequestData(
 	creator string,
-	oracleScriptID oracletypes.OracleScriptID,
+	oracleScriptID int64,
 	sourceChannel string,
 	calldata *Calldata,
 	askCount uint64,
@@ -23,7 +21,7 @@ func NewMsgRequestData(
 ) *MsgRequestData {
 	return &MsgRequestData{
 		Creator:        creator,
-		OracleScriptID: int64(oracleScriptID),
+		OracleScriptID: oracleScriptID,
 		SourceChannel:  sourceChannel,
 		Calldata:       calldata,
 		AskCount:       askCount,
